@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Configuration;
 
 namespace WospAPI
 {
@@ -16,10 +17,14 @@ namespace WospAPI
 #if DEBUG
                 .UseKestrel()
 #else
+                var builder = new ConfigurationBuilder()
+                    .SetBasePath(Directory.GetCurrentDirectory())
+                    .AddJsonFile("appsettings.production.json");
+                var config = builder.Build();
                 .UseKestrel(options =>
                 {
                     options.NoDelay = true;
-                    options.UseHttps("wosp.crt");
+                    options.UseHttps(Path.Combine(new DirectoryInfo(Directory.GetCurrentDirectory()).FullName, "wosp.pfx"), config["Data:CertPass"]);
                 })
                 .UseUrls("http://*:80", "http://*:443")
 #endif
