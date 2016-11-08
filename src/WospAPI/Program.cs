@@ -13,11 +13,15 @@ namespace WospAPI
     {
         public static void Main(string[] args)
         {
-            Console.WriteLine(Directory.GetCurrentDirectory());
-            Console.WriteLine(string.Join("\r\n", Directory.GetFiles(Directory.GetCurrentDirectory())));
 #if !DEBUG
+            string appPath = Directory.GetCurrentDirectory();
+            if (!Directory.GetFiles(appPath).Any(file => file.ToLower().Contains("wospapi.dll")))
+            {
+                appPath = Path.Combine(appPath, "root");
+            }
+
             var builder = new ConfigurationBuilder()
-                    .SetBasePath(Directory.GetCurrentDirectory())
+                    .SetBasePath(appPath)
                     .AddJsonFile("appsettings.production.json");
             var config = builder.Build();            
 #endif
@@ -28,7 +32,7 @@ namespace WospAPI
                 .UseKestrel(options =>
                 {
                     options.NoDelay = true;
-                    options.UseHttps(Path.Combine(new DirectoryInfo(Directory.GetCurrentDirectory()).FullName, "wosp.pfx"), config["Data:CertPass"]);
+                    options.UseHttps(Path.Combine(appPath, "wosp.pfx"), config["Data:CertPass"]);
                 })
                 .UseUrls("http://*:80", "http://*:443")
 #endif
