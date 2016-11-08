@@ -13,14 +13,16 @@ namespace WospAPI
     {
         public static void Main(string[] args)
         {
+#if !DEBUG
+            var builder = new ConfigurationBuilder()
+                    .SetBasePath(Directory.GetCurrentDirectory())
+                    .AddJsonFile("appsettings.production.json");
+            var config = builder.Build();            
+#endif
             var host = new WebHostBuilder()
 #if DEBUG
                 .UseKestrel()
 #else
-                var builder = new ConfigurationBuilder()
-                    .SetBasePath(Directory.GetCurrentDirectory())
-                    .AddJsonFile("appsettings.production.json");
-                var config = builder.Build();
                 .UseKestrel(options =>
                 {
                     options.NoDelay = true;
