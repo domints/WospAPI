@@ -13,6 +13,7 @@ namespace WospAPI
     {
         public static void Main(string[] args)
         {
+            Console.WriteLine(string.Join("\r\n", Directory.GetFiles(Directory.GetCurrentDirectory())));
 #if !DEBUG
             var builder = new ConfigurationBuilder()
                     .SetBasePath(Directory.GetCurrentDirectory())
