@@ -14,6 +14,7 @@ namespace WospAPI
     {
         public Startup(IHostingEnvironment env)
         {
+            Console.WriteLine($"Running {env.EnvironmentName}...");
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
